@@ -229,7 +229,7 @@ end
 local function getclassicon(unit, isclass)
 	local coords, texture, none, eclass
 	return function(unit, isclass)
-		print(unit);
+		print(unit)
 		texture = "Interface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes"
 		if isclass then
 			coords = class[unit]

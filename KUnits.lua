@@ -185,6 +185,7 @@ local class = {
 	["WARLOCK"]	= {0.7421875, 0.98828125, 0.25, 0.5},
 	["PALADIN"]	= {0, 0.25, 0.5, 0.75},
 	["DEATHKNIGHT"] = { 0.25, 0.49609375, 0.5, 0.75},
+	["DEMONHUNTER"] = { 0.25, 0.49609375, 0.5, 0.75},
 	["PETS"]	= {0, 1, 0, 1},
 }
 
@@ -228,6 +229,7 @@ end
 local function getclassicon(unit, isclass)
 	local coords, texture, none, eclass
 	return function(unit, isclass)
+		print(unit);
 		texture = "Interface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes"
 		if isclass then
 			coords = class[unit]

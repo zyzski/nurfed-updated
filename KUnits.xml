@@ -1,0 +1,1414 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\UI.xsd">
+	<Script file="KUnits.lua"/>
+	<Font name="KUnits_UnitFont" font="Interface\Addons\KUnits\Fonts\framd.ttf" virtual="true">
+		<Color r="1.0" g="1.0" b="1.0"/>
+		<FontHeight>
+			<AbsValue val="10"/>
+		</FontHeight>
+	</Font>
+	<Font name="KUnits_UnitFontOutline" font="Interface\Addons\KUnits\Fonts\framd.ttf" virtual="true" outline="NORMAL">
+		<FontHeight>
+			<AbsValue val="10"/>
+		</FontHeight>
+		<Color r="1.0" g="1.0" b="1.0"/>
+	</Font>
+	<Font name="KUnits_UnitFontSmall" font="Interface\Addons\KUnits\Fonts\framd.ttf" virtual="true">
+		<FontHeight>
+			<AbsValue val="8"/>
+		</FontHeight>
+		<Color r="1.0" g="1.0" b="1.0"/>
+	</Font>
+	<Font name="KUnits_UnitFontSmallOutline" font="Interface\Addons\KUnits\Fonts\framd.ttf" virtual="true" outline="NORMAL">
+		<FontHeight>
+			<AbsValue val="8"/>
+		</FontHeight>
+		<Color r="1.0" g="1.0" b="1.0"/>
+	</Font>
+	<Font name="KUnits_UnitFontSmallerOutline" font="Interface\Addons\KUnits\Fonts\framd.ttf" virtual="true" outline="NORMAL">
+		<FontHeight>
+			<AbsValue val="9"/> 
+		</FontHeight>
+		<Color r="1.0" g="1.0" b="1.0"/>
+	</Font>
+	<Font name="KUnits_UnitFontSmaller" font="Interface\Addons\KUnits\Fonts\framd.ttf" virtual="true">
+		<FontHeight>
+			<AbsValue val="9"/> 
+		</FontHeight>
+		<Color r="1.0" g="1.0" b="1.0"/>
+	</Font>
+	<Font name="KUnits_UnitFontVeryLarge" font="Interface\Addons\KUnits\Fonts\framd.ttf" virtual="true" outline="NORMAL">
+		<FontHeight>
+			<AbsValue val="22"/>
+		</FontHeight>
+		<Color r="1.0" g="1.0" b="1.0"/>
+	</Font>
+	<Font name="KUnits_CountFontOutline" font="Interface\Addons\KUnits\Fonts\ARIALN.TTF" virtual="true" outline="NORMAL">
+		<FontHeight>
+			<AbsValue val="12"/>
+		</FontHeight>
+		<Color r="1.0" g="1.0" b="1.0"/>
+	</Font>
+	<Button name ="KUnitsBuffDebuffButtonTemplate" virtual="true">
+		<Size>
+			<AbsDimension x="17" y="17"/>
+		</Size>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture name="$parentIcon" setAllPoints="true"/>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture name="$parentBorder" file="Interface\Buttons\UI-Debuff-Overlays">
+					<Size>
+						<AbsDimension x="17" y="17"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset x="-1" y="1"/>
+						</Anchor>
+						<Anchor point="BOTTOMRIGHT">
+							<Offset x="1" y="-1"/>
+						</Anchor>
+					</Anchors>
+					<TexCoords left="0.296875" right="0.5703125" top="0" bottom="0.515625"/>
+				</Texture>	
+				<FontString name="$parentCount" inherits="NumberFontNormalSmall" justifyH="RIGHT">
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT">
+							<Offset>
+								<AbsDimension x="5" y="0"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Cooldown name="$parentCooldown" inherits="CooldownFrameTemplate" reverse="true" drawEdge="true" hidden="true">
+				<Anchors>
+					<Anchor point="CENTER">
+						<Offset>
+							<AbsDimension x="0" y="-1"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Cooldown>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				self:SetScript("OnUpdate",nil)
+			</OnLoad>
+			<OnEnter>
+				if not self:IsVisible() then return end
+				GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
+				if self.isDebuff then
+					GameTooltip:SetUnitDebuff(self:GetParent().unit, self:GetID())
+				else
+					GameTooltip:SetUnitBuff(self:GetParent().unit, self:GetID())
+				end
+			</OnEnter>
+			<OnLeave>
+				GameTooltip:Hide()
+			</OnLeave>
+		</Scripts>
+	</Button>
+	<StatusBar name="KUnits_Unit_hp" orientation="HORIZONTAL" frameStrata="LOW" virtual="true">
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString name="$parenttext" inherits="KUnits_UnitFont" justifyH="LEFT" setAllPoints="true">
+					<Shadow>
+						<Offset>
+							<AbsDimension x="-1" y="-1"/>
+						</Offset>
+						<Color r="0" g="0" b="0" a="0.75"/>
+					</Shadow>
+				</FontString>
+				<FontString name="$parenttext2" inherits="KUnits_UnitFontOutline" justifyH="RIGHT" setAllPoints="true">
+					<Color r="1" g="0.25" b="0"/>
+				</FontString>
+			</Layer>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentbg" file="Interface\Addons\KUnits\Images\statusbar1" setAllPoints="true"/>
+			</Layer>
+		</Layers>
+		<BarTexture name="$parenthptexture" file="Interface\Addons\KUnits\Images\statusbar2"/>	
+	</StatusBar>
+	<StatusBar name="KUnits_Unit_mp" virtual="true" frameStrata="LOW" orientation="HORIZONTAL">
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString name="$parenttext" inherits="KUnits_UnitFont" justifyH="LEFT" setAllPoints="true">
+					<Shadow>
+						<Offset>
+							<AbsDimension x="-1" y="-1"/>
+						</Offset>
+						<Color r="0" g="0" b="0" a="0.75"/>
+					</Shadow>
+				</FontString>
+			</Layer>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentbg" file="Interface\Addons\KUnits\Images\statusbar1" setAllPoints="true"/>
+			</Layer>
+		</Layers>
+	<BarTexture name="$parenttexture" file="Interface\Addons\KUnits\Images\statusbar2"/>	
+	</StatusBar>
+	<PlayerModel name="KUnits_Unit_model" virtual="true" frameStrata="LOW" scale="1.9" frameLevel="1">
+		<Size>
+			<AbsDimension x="40" y="40"></AbsDimension>
+		</Size>
+		<Scripts>
+			<OnLoad>
+				KUnits_model_OnLoad(self)
+			</OnLoad>
+		</Scripts>
+	</PlayerModel>
+	<Button name="KUnits_Unit_mini" inherits="SecureUnitButtonTemplate" frameStrata="LOW" virtual="true">
+		<Size>
+			<AbsDimension x="80" y="22"></AbsDimension>
+		</Size>
+		<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile = "Interface\Tooltips\UI-Tooltip-Border" tile="true">
+			<Color r="0" g="0" b="0" a="0.75"/>
+			<EdgeSize>
+				<AbsValue val="8"/>
+			</EdgeSize>
+			<TileSize>
+				<AbsValue val="16"/>
+			</TileSize>
+			<BackgroundInsets> 
+				<AbsInset left="2" right="2" top="2" bottom="2"/>
+			</BackgroundInsets>
+		</Backdrop>
+		<Frames>
+			<StatusBar name="$parenthp" frameStrata="LOW" orientation="HORIZONTAL">
+				<Size>
+					<AbsDimension x="74" y="9"></AbsDimension>
+				</Size>
+				<Anchors>
+ 					<Anchor point="BOTTOMLEFT" relativeTo="$parent" relativePoint="BOTTOMLEFT">
+   					<Offset><AbsDimension x="3" y="3"/></Offset>
+  				</Anchor>
+ 				</Anchors>
+ 				<Layers> 
+					<Layer level="OVERLAY">
+						<FontString name="$parenttext" inherits="KUnits_UnitFontSmallOutline" justifyH="RIGHT" setAllPoints="true">
+							<Color r="1" g="0.25" b="0"/>
+						</FontString>
+					</Layer>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentbg" file="Interface\Addons\KUnits\Images\statusbar2" setAllPoints="true">
+							<Color r="1" g="0" b="0" a="0.25"/>
+						</Texture>
+					</Layer>
+				</Layers>
+				<BarTexture name="$parenttexture" file="Interface\Addons\KUnits\Images\statusbar2"/>	
+			</StatusBar>
+		</Frames>
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString name="$parentname" inherits="KUnits_UnitFontSmall" justifyH="LEFT" setAllPoints="true">
+					<Size>
+						<AbsDimension x="75" y="8"></AbsDimension>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
+							<Offset><AbsDimension x="3" y="-2"/></Offset>
+						</Anchor>
+					</Anchors>
+					<Shadow>
+						<Offset>
+							<AbsDimension x="-1" y="-1"/>
+						</Offset>
+						<Color r="0" g="0" b="0" a="0.75"/>
+					</Shadow>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				KUnits_mini_Initialize(self)
+			</OnLoad>
+		</Scripts>
+	</Button>
+	<Frame name ="KUnits_PartyParent" parent="UIParent" hidden="false"></Frame>
+	<Button name="KUnits_Party" inherits="SecureUnitButtonTemplate" clampedToScreen="true" virtual="true" movable="true" enableMouse="true" frameStrata="LOW" parent="KUnits_PartyParent">
+		<Size>
+			<AbsDimension x="180" y="41"/>
+		</Size>
+		<Frames>
+			<StatusBar name="$parenthp" inherits="KUnits_Unit_hp">
+				<Size>
+					<AbsDimension x="147" y="12"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parent" relativePoint="BOTTOMRIGHT">
+						<Offset><AbsDimension x="-5" y="14"/></Offset>
+					</Anchor>
+				</Anchors>
+			</StatusBar>
+			<StatusBar name="$parentmp" inherits="KUnits_Unit_mp">
+				<Size>
+					<AbsDimension x="147" y="8"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parent" relativePoint="BOTTOMRIGHT">
+					<Offset><AbsDimension x="-5" y="5"/></Offset>
+					</Anchor>
+				</Anchors>
+			</StatusBar>
+			<Button name="$parentbuff1" inherits="KUnitsBuffDebuffButtonTemplate" id="1">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="BOTTOMLEFT">
+						<Offset><AbsDimension x="4" y="2"/></Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff2" inherits="KUnitsBuffDebuffButtonTemplate" id="2">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff1" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff3" inherits="KUnitsBuffDebuffButtonTemplate" id="3">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff2" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff4" inherits="KUnitsBuffDebuffButtonTemplate" id="4">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff3" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff5" inherits="KUnitsBuffDebuffButtonTemplate" id="5">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff4" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff6" inherits="KUnitsBuffDebuffButtonTemplate" id="6">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff5" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff7" inherits="KUnitsBuffDebuffButtonTemplate" id="7">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff6" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff8" inherits="KUnitsBuffDebuffButtonTemplate" id="8">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff7" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff9" inherits="KUnitsBuffDebuffButtonTemplate" id="9">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff8" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff10" inherits="KUnitsBuffDebuffButtonTemplate" id="10"> 
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff9" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff11" inherits="KUnitsBuffDebuffButtonTemplate" id="11"> 
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff10" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff12" inherits="KUnitsBuffDebuffButtonTemplate" id="12"> 
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff11" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff13" inherits="KUnitsBuffDebuffButtonTemplate" id="13"> 
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff12" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff14" inherits="KUnitsBuffDebuffButtonTemplate" id="14"> 
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff13" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff15" inherits="KUnitsBuffDebuffButtonTemplate" id="15"> 
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff14" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff16" inherits="KUnitsBuffDebuffButtonTemplate" id="16"> 
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff15" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff1" inherits="KUnitsBuffDebuffButtonTemplate" id="1">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPRIGHT">
+						<Offset><AbsDimension x="-3" y="-2"/></Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff2" inherits="KUnitsBuffDebuffButtonTemplate" id="2">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentdebuff1" relativePoint="RIGHT">
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff3" inherits="KUnitsBuffDebuffButtonTemplate" id="3">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentdebuff2" relativePoint="RIGHT">
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff4" inherits="KUnitsBuffDebuffButtonTemplate" id="4">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentdebuff3" relativePoint="RIGHT">
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff5" inherits="KUnitsBuffDebuffButtonTemplate" id="5">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentdebuff4" relativePoint="RIGHT">
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff6" inherits="KUnitsBuffDebuffButtonTemplate" id="6">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentdebuff5" relativePoint="RIGHT">
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff7" inherits="KUnitsBuffDebuffButtonTemplate" id="7">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentdebuff6" relativePoint="RIGHT">
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff8" inherits="KUnitsBuffDebuffButtonTemplate" id="8">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentdebuff7" relativePoint="RIGHT">
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parenttarget" inherits="KUnits_Unit_mini">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativeTo="$parent" relativePoint="BOTTOMRIGHT">
+						<Offset><AbsDimension x="-4" y="2"/></Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+		</Frames>
+		<Layers>
+			<Layer level="OVERLAY">
+				<Texture name="$parentclassicon" file="Interface\Glues\CharacterCreate\UI-CharacterCreate-Classes">
+					<Size>
+						<AbsDimension x="23" y="23"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
+						<Offset><AbsDimension x="5" y="-4"/></Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentleader" file="Interface\GroupFrame\UI-Group-LeaderIcon">
+					<Size>
+						<AbsDimension x="12" y="13"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
+							<Offset><AbsDimension x="5" y="-25"/></Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentmaster" file="Interface\GroupFrame\UI-Group-MasterLooter">
+					<Size>
+						<AbsDimension x="11" y="11"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
+							<Offset><AbsDimension x="16" y="-26"/></Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+				<FontString name="$parentname" inherits="KUnits_UnitFont" justifyH="LEFT">
+					<Size>
+						<AbsDimension x="140" y="10"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
+							<Offset><AbsDimension x="28" y="-4"/></Offset>
+						</Anchor>
+					</Anchors>			
+				</FontString>
+				<FontString name="$parenthpperc" inherits="KUnits_UnitFontOutline" justifyH="RIGHT">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativeTo="$parent" relativePoint="TOPRIGHT">
+							<Offset><AbsDimension x="-15" y="-5"/></Offset>
+						</Anchor>
+					</Anchors>			
+				</FontString>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parenthighlight" file="Interface\QuestFrame\UI-QuestTitleHighlight" hidden="true" alphaMode="ADD">
+					<Size>
+						<AbsDimension x="130" y="12"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativeTo="$parent" relativePoint="TOPRIGHT">
+							<Offset><AbsDimension x="-5" y="-4"/></Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+  		<OnLoad>
+  			self:RegisterForClicks("AnyUp")
+   			KUnits_party_Initialize(self)
+   			KUnits_party_OnLoad(self)
+  		</OnLoad>
+ 		</Scripts>
+	</Button>
+	<Button name="KUnits_player" inherits="SecureUnitButtonTemplate" clampedToScreen="true" movable="true" enableMouse="true" frameStrata="LOW" parent="UIParent">
+		<Size>
+			<AbsDimension x="180" y="50"/>
+		</Size>
+		<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile = "Interface\Tooltips\UI-Tooltip-Border" tile="true">
+			<Color r="0" g="0" b="0" a="0.75"/>
+			<EdgeSize>
+				<AbsValue val="16"/>
+			</EdgeSize>
+			<TileSize>
+				<AbsValue val="16"/>
+			</TileSize>
+			<BackgroundInsets>
+				<AbsInset left="5" right="5" top="5" bottom="5"/>
+			</BackgroundInsets>
+		</Backdrop>
+		<Frames>
+			<StatusBar name="$parenthp" inherits="KUnits_Unit_hp">
+				<Size>
+					<AbsDimension x="130" y="13"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parent" relativePoint="BOTTOMRIGHT">
+						<Offset><AbsDimension x="-5" y="16"/></Offset>
+					</Anchor>
+				</Anchors>
+			</StatusBar>
+			<StatusBar name="$parentmp" inherits="KUnits_Unit_mp">
+				<Size>
+					<AbsDimension x="130" y="10"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parent" relativePoint="BOTTOMRIGHT">
+						<Offset><AbsDimension x="-5" y="5"/></Offset>
+					</Anchor>
+				</Anchors>
+			</StatusBar>
+			<PlayerModel name="$parentmodel" inherits="KUnits_Unit_model">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativeTo="$parent" relativePoint="BOTTOMLEFT">
+						<Offset><AbsDimension x="5" y="5"/></Offset>
+					</Anchor>
+				</Anchors>
+			</PlayerModel>
+		</Frames>
+		<Layers>
+			<Layer level="OVERLAY">
+				<Texture name="$parentstatus" file="Interface\CharacterFrame\UI-StateIcon" hidden="true">
+					<Size>
+						<AbsDimension x="20" y="20"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativeTo="$parent" relativePoint="TOPRIGHT">
+							<Offset><AbsDimension x="-38" y="-3"/></Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentleader" hidden="true" file="Interface\GroupFrame\UI-Group-LeaderIcon">
+					<Size>
+						<AbsDimension x="10" y="10"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parent" relativePoint="TOP">
+							<Offset><AbsDimension x="28" y="-4"/></Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentmaster" hidden="true" file="Interface\GroupFrame\UI-Group-MasterLooter">
+					<Size>
+						<AbsDimension x="9" y="9"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parent" relativePoint="TOP">
+							<Offset><AbsDimension x="28" y="-12"/></Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+				<FontString name="$parentname" inherits="KUnits_UnitFont" justifyH="LEFT">
+					<Size>
+						<AbsDimension x="65" y="9"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
+							<Offset><AbsDimension x="45" y="-4"/></Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentgroup" inherits="KUnits_UnitFontSmall" justifyH="LEFT">
+					<Size>
+						<AbsDimension x="50" y="8"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
+							<Offset><AbsDimension x="45" y="-13"/></Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentlevel" inherits="KUnits_UnitFont" justifyH="RIGHT">
+					<Size>
+						<AbsDimension x="20" y="10"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parent" relativePoint="TOP">
+							<Offset><AbsDimension x="10" y="-5"/></Offset>
+						</Anchor>
+					</Anchors>
+					<Color r="1" g="1" b="0"/>
+				</FontString>
+				<FontString name="$parenthpperc" font="KUnits_UnitFontOutline" justifyH="RIGHT">
+					<Size>
+						<AbsDimension x="100" y="9"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativeTo="$parent" relativePoint="TOPRIGHT">
+							<Offset><AbsDimension x="-9" y="-10"/></Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				self:RegisterForClicks("AnyUp")
+				KUnits_Initialize(self,"player", KUnits_playername,
+									 				KUnits_playerhp, KUnits_playerhptext, 
+									 				KUnits_playerhptext2, KUnits_playerhpbg,
+									 				KUnits_playermp, KUnits_playermptext,
+									 				KUnits_playermpbg, KUnits_playerlevel, KUnits_playerhpperc)
+				KUnits_player_OnLoad(self)
+			</OnLoad>
+		</Scripts>
+	</Button>
+	<Button name="KUnits_target" inherits="SecureUnitButtonTemplate" clampedToScreen="true" movable="true" enableMouse="true" frameStrata="LOW" parent="UIParent">
+		<Size>
+			<AbsDimension x="180" y="50"/>
+		</Size>
+		<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+			<Color r="0" g="0" b="0" a="0.75"/>
+			<EdgeSize>
+				<AbsValue val="16"/>
+			</EdgeSize>
+			<TileSize>
+				<AbsValue val="16"/>
+			</TileSize>
+			<BackgroundInsets>
+				<AbsInset left="5" right="5" top="5" bottom="5"/>
+			</BackgroundInsets>
+		</Backdrop>
+		<Frames>
+			<StatusBar name="$parenthp" inherits="KUnits_Unit_hp">
+				<Size>
+					<AbsDimension x="130" y="13"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativeTo="$parent" relativePoint="BOTTOMLEFT">
+						<Offset><AbsDimension x="5" y="15"/></Offset>
+					</Anchor>
+				</Anchors>
+			</StatusBar>
+			<StatusBar name="$parentmp" inherits="KUnits_Unit_mp">
+				<Size>
+					<AbsDimension x="130" y="10"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativeTo="$parent" relativePoint="BOTTOMLEFT">
+						<Offset><AbsDimension x="5" y="5"/></Offset>
+					</Anchor>
+				</Anchors>
+			</StatusBar>
+			<PlayerModel name="$parentmodel" inherits="KUnits_Unit_model">
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parent" relativePoint="BOTTOMRIGHT">
+						<Offset><AbsDimension x="-4" y="5"/></Offset>
+					</Anchor>
+				</Anchors>
+			</PlayerModel>
+			<Button name="$parenttarget" inherits="KUnits_Unit_mini">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
+						<Offset><AbsDimension x="1" y="20"/></Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parenttargettarget" inherits="KUnits_Unit_mini">
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativeTo="$parent" relativePoint="TOPRIGHT">
+						<Offset><AbsDimension x="-1" y="20"/></Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff1" inherits="KUnitsBuffDebuffButtonTemplate" id="1">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="BOTTOMLEFT">
+						<Offset><AbsDimension x="4" y="2"/></Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff2" inherits="KUnitsBuffDebuffButtonTemplate" id="2">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff1" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff3" inherits="KUnitsBuffDebuffButtonTemplate" id="3">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff2" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff4" inherits="KUnitsBuffDebuffButtonTemplate" id="4"> 
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff3" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff5" inherits="KUnitsBuffDebuffButtonTemplate" id="5">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff4" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff6" inherits="KUnitsBuffDebuffButtonTemplate" id="6">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff5" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff7" inherits="KUnitsBuffDebuffButtonTemplate" id="7">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff6" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff8" inherits="KUnitsBuffDebuffButtonTemplate" id="8">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff7" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff9" inherits="KUnitsBuffDebuffButtonTemplate" id="9">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff8" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff10" inherits="KUnitsBuffDebuffButtonTemplate" id="10">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff9" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff11" inherits="KUnitsBuffDebuffButtonTemplate" id="11">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff10" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff12" inherits="KUnitsBuffDebuffButtonTemplate" id="12">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff11" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff13" inherits="KUnitsBuffDebuffButtonTemplate" id="13">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff12" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff14" inherits="KUnitsBuffDebuffButtonTemplate" id="14">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff13" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff15" inherits="KUnitsBuffDebuffButtonTemplate" id="15">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff14" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff16" inherits="KUnitsBuffDebuffButtonTemplate" id="16">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff15" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff1" inherits="KUnitsBuffDebuffButtonTemplate" id="1">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentbuff1" relativePoint="BOTTOMLEFT">
+						<Offset><AbsDimension x="0" y="-1"/></Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff2" inherits="KUnitsBuffDebuffButtonTemplate" id="2">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentdebuff1" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff3" inherits="KUnitsBuffDebuffButtonTemplate" id="3">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentdebuff2" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff4" inherits="KUnitsBuffDebuffButtonTemplate" id="4">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentdebuff3" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff5" inherits="KUnitsBuffDebuffButtonTemplate" id="5">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentdebuff4" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff6" inherits="KUnitsBuffDebuffButtonTemplate" id="6">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentdebuff5" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff7" inherits="KUnitsBuffDebuffButtonTemplate" id="7">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentdebuff6" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff8" inherits="KUnitsBuffDebuffButtonTemplate" id="8">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentdebuff7" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff9" inherits="KUnitsBuffDebuffButtonTemplate" id="9">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentdebuff8" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff10" inherits="KUnitsBuffDebuffButtonTemplate" id="10">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentdebuff9" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff11" inherits="KUnitsBuffDebuffButtonTemplate" id="11">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentdebuff1" relativePoint="BOTTOM"/>
+						<Offset><AbsDimension x="0" y="-1"/></Offset>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff12" inherits="KUnitsBuffDebuffButtonTemplate" id="12">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentdebuff11" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff13" inherits="KUnitsBuffDebuffButtonTemplate" id="13">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentdebuff12" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff14" inherits="KUnitsBuffDebuffButtonTemplate" id="14">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentdebuff13" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff15" inherits="KUnitsBuffDebuffButtonTemplate" id="15">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentdebuff14" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff16" inherits="KUnitsBuffDebuffButtonTemplate" id="16">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentdebuff15" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff17" inherits="KUnitsBuffDebuffButtonTemplate" id="17">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentdebuff16" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff18" inherits="KUnitsBuffDebuffButtonTemplate" id="18">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentdebuff17" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff19" inherits="KUnitsBuffDebuffButtonTemplate" id="19">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentdebuff18" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff20" inherits="KUnitsBuffDebuffButtonTemplate" id="20">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentdebuff19" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+		</Frames>
+		<Layers>
+			<Layer level="OVERLAY">
+				<Texture name="$parentpvp">
+					<Size>
+						<AbsDimension x="29" y="29"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativeTo="$parent" relativePoint="TOPRIGHT">
+							<Offset><AbsDimension x="-35" y="-4"/></Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+				<FontString name="$parentname" inherits="KUnits_UnitFont" justifyH="LEFT">
+					<Size>
+						<AbsDimension x="110" y="9"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
+							<Offset><AbsDimension x="5" y="-4"/></Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentlevel" inherits="KUnits_UnitFontSmall" justifyH="LEFT">
+					<Size>
+						<AbsDimension x="90" y="8"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
+							<Offset><AbsDimension x="5" y="-13"/></Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parenthpperc" font="KUnits_UnitFontSmaller" justifyH="RIGHT">
+					<Size>
+						<AbsDimension x="100" y="9"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativeTo="$parent" relativePoint="TOPRIGHT">
+							<Offset><AbsDimension x="-63" y="-12"/></Offset>
+						</Anchor>
+					</Anchors>
+				</FontString> 
+				<FontString name="$parentcombo" font="KUnits_UnitFontVeryLarge" justifyH="RIGHT">
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" relativeTo="$parent" relativePoint="BOTTOMRIGHT">
+							<Offset><AbsDimension x="-2" y="3"/></Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				self:RegisterForClicks("AnyUp")
+				KUnits_Initialize(self, "target", KUnits_targetname,
+									 				KUnits_targethp, KUnits_targethptext, 
+									 				KUnits_targethptext2, KUnits_targethpbg,
+									 				KUnits_targetmp, KUnits_targetmptext,
+									 				KUnits_targetmpbg, KUnits_targetlevel, 
+									 				KUnits_targethpperc)
+				KUnits_target_OnLoad(self)
+			</OnLoad>
+		</Scripts>
+	</Button>
+	<Button name="KUnits_pet" frameStrata="LOW" clampedToScreen="true" enableMouse="true" movable="true" inherits="SecureUnitButtonTemplate" parent="UIParent">
+		<Size><AbsDimension x="160" y="43"/></Size>
+		<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile = "Interface\Tooltips\UI-Tooltip-Border" tile="true">
+			<Color r="0" g="0" b="0" a="0.75"/>
+			<EdgeSize>
+				<AbsValue val="16"/>
+			</EdgeSize>
+			<TileSize>
+				<AbsValue val="16"/>
+			</TileSize>
+			<BackgroundInsets>
+				<AbsInset left="5" right="5" top="5" bottom="5"/>
+			</BackgroundInsets>
+		</Backdrop>
+		<Frames>
+			<Button name="$parentbuff1" inherits="KUnitsBuffDebuffButtonTemplate" id="1">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="BOTTOMLEFT">
+						<Offset><AbsDimension x="4" y="2"/></Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff2" inherits="KUnitsBuffDebuffButtonTemplate" id="2">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff1" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff3" inherits="KUnitsBuffDebuffButtonTemplate" id="3">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff2" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff4" inherits="KUnitsBuffDebuffButtonTemplate" id="4">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff3" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff5" inherits="KUnitsBuffDebuffButtonTemplate" id="5">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff4" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff6" inherits="KUnitsBuffDebuffButtonTemplate" id="6">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff5" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff7" inherits="KUnitsBuffDebuffButtonTemplate" id="7">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff6" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff8" inherits="KUnitsBuffDebuffButtonTemplate" id="8">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff7" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff9" inherits="KUnitsBuffDebuffButtonTemplate" id="9">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff8" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff1" inherits="KUnitsBuffDebuffButtonTemplate" id="1">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentbuff1" relativePoint="BOTTOMLEFT">
+						<Offset><AbsDimension x="0" y="-1"/></Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff2" inherits="KUnitsBuffDebuffButtonTemplate" id="2">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentdebuff1" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff3" inherits="KUnitsBuffDebuffButtonTemplate" id="3">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentdebuff2" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff4" inherits="KUnitsBuffDebuffButtonTemplate" id="4">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentdebuff3" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff5" inherits="KUnitsBuffDebuffButtonTemplate" id="5">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentdebuff4" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff6" inherits="KUnitsBuffDebuffButtonTemplate" id="6">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentdebuff5" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff7" inherits="KUnitsBuffDebuffButtonTemplate" id="7">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentdebuff6" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff8" inherits="KUnitsBuffDebuffButtonTemplate" id="8">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentdebuff7" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff9" inherits="KUnitsBuffDebuffButtonTemplate" id="9">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentdebuff8" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<StatusBar name="$parenthp" inherits="KUnits_Unit_hp">
+				<Size>
+					<AbsDimension x="150" y="12"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parent" relativePoint="BOTTOMRIGHT">
+						<Offset><AbsDimension x="-5" y="14"/></Offset>
+					</Anchor>
+				</Anchors>
+			</StatusBar>
+			<StatusBar name="$parentmp" inherits="KUnits_Unit_mp">
+				<Size>
+					<AbsDimension x="150" y="8"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parent" relativePoint="BOTTOMRIGHT">
+					<Offset><AbsDimension x="-5" y="5"/></Offset>
+					</Anchor>
+				</Anchors>
+			</StatusBar>
+		</Frames>
+		<Layers>
+			<Layer level="OVERLAY">
+				<Texture name="$parenthappiness" file="Interface\PetPaperDollFrame\UI-PetHappiness" hidden="true">
+					<Size>
+						<AbsDimension x="14" y="14"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativeTo="$parent" relativePoint="TOPRIGHT">
+							<Offset><AbsDimension x="-40" y="-4"/></Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+				<FontString name="$parenthpperc" font="KUnits_UnitFontSmallerOutline" justifyH="RIGHT">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativeTo="$parent" relativePoint="TOPRIGHT">
+							<Offset><AbsDimension x="-5" y="-5"/></Offset>
+						</Anchor>
+					</Anchors>
+				</FontString> 
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString name="$parentname" inherits="KUnits_UnitFont" justifyH="LEFT">
+					<Size>
+						<AbsDimension x="123" y="10"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
+							<Offset><AbsDimension x="5" y="-4"/></Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				self:RegisterForClicks("AnyUp")
+				KUnits_Initialize(self, "pet", KUnits_petname,
+									 				KUnits_pethp, KUnits_pethptext, 
+									 				KUnits_pethptext2, KUnits_pethpbg,
+									 				KUnits_petmp, KUnits_petmptext,
+									 				KUnits_petmpbg, KUnits_petlevel, 
+									 				KUnits_pethpperc)
+				KUnits_pet_OnLoad(self)
+			</OnLoad>
+		</Scripts>
+	</Button>
+
+	
+	<Button name="KUnits_focus" frameStrata="LOW" clampedToScreen="true" enableMouse="true" movable="true" inherits="SecureUnitButtonTemplate" parent="UIParent" hidden="true">
+		<Size>
+			<AbsDimension x="160" y="43"/>
+		</Size>
+		<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile = "Interface\Tooltips\UI-Tooltip-Border" tile="true">
+			<Color r="0" g="0" b="0" a="0.75"/>
+			<EdgeSize>
+				<AbsValue val="16"/>
+			</EdgeSize>
+			<TileSize>
+				<AbsValue val="16"/>
+			</TileSize>
+			<BackgroundInsets>
+				<AbsInset left="5" right="5" top="5" bottom="5"/>
+			</BackgroundInsets>
+		</Backdrop>
+		<Frames>
+			<StatusBar name="$parenthp" inherits="KUnits_Unit_hp">
+				<Size>
+					<AbsDimension x="150" y="12"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parent" relativePoint="BOTTOMRIGHT">
+						<Offset><AbsDimension x="-5" y="14"/></Offset>
+					</Anchor>
+				</Anchors>
+			</StatusBar>
+			<StatusBar name="$parentmp" inherits="KUnits_Unit_mp">
+				<Size>
+					<AbsDimension x="150" y="8"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parent" relativePoint="BOTTOMRIGHT">
+					<Offset><AbsDimension x="-5" y="5"/></Offset>
+					</Anchor>
+				</Anchors>
+			</StatusBar>
+			<Button name="$parenttarget" inherits="KUnits_Unit_mini">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
+						<Offset><AbsDimension x="1" y="20"/></Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parenttargettarget" inherits="KUnits_Unit_mini">
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativeTo="$parent" relativePoint="TOPRIGHT">
+						<Offset><AbsDimension x="-1" y="20"/></Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff1" inherits="KUnitsBuffDebuffButtonTemplate" id="1">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="BOTTOMLEFT">
+						<Offset><AbsDimension x="4" y="2"/></Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff2" inherits="KUnitsBuffDebuffButtonTemplate" id="2">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff1" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff3" inherits="KUnitsBuffDebuffButtonTemplate" id="3">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff2" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff4" inherits="KUnitsBuffDebuffButtonTemplate" id="4">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff3" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff5" inherits="KUnitsBuffDebuffButtonTemplate" id="5">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff4" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff6" inherits="KUnitsBuffDebuffButtonTemplate" id="6">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff5" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff7" inherits="KUnitsBuffDebuffButtonTemplate" id="7">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff6" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff8" inherits="KUnitsBuffDebuffButtonTemplate" id="8">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff7" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentbuff9" inherits="KUnitsBuffDebuffButtonTemplate" id="9">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentbuff8" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			
+			<Button name="$parentdebuff1" inherits="KUnitsBuffDebuffButtonTemplate" id="1">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentbuff1" relativePoint="BOTTOMLEFT">
+						<Offset><AbsDimension x="0" y="-1"/></Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff2" inherits="KUnitsBuffDebuffButtonTemplate" id="2">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentdebuff1" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff3" inherits="KUnitsBuffDebuffButtonTemplate" id="3">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentdebuff2" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff4" inherits="KUnitsBuffDebuffButtonTemplate" id="4">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentdebuff3" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff5" inherits="KUnitsBuffDebuffButtonTemplate" id="5">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentdebuff4" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff6" inherits="KUnitsBuffDebuffButtonTemplate" id="6">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentdebuff5" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff7" inherits="KUnitsBuffDebuffButtonTemplate" id="7">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentdebuff6" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff8" inherits="KUnitsBuffDebuffButtonTemplate" id="8">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentdebuff7" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentdebuff9" inherits="KUnitsBuffDebuffButtonTemplate" id="9">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentdebuff8" relativePoint="RIGHT"/>
+				</Anchors>
+			</Button>
+		</Frames>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentname" inherits="KUnits_UnitFont" justifyH="LEFT">
+					<Size>
+						<AbsDimension x="123" y="10"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
+							<Offset><AbsDimension x="5" y="-4"/></Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+			<Layer level="OVERLAY">
+				<FontString name="$parenthpperc" font="KUnits_UnitFontSmallerOutline" justifyH="RIGHT">
+					<Anchors>
+						<Anchor point="TOPRIGHT" relativeTo="$parent" relativePoint="TOPRIGHT">
+							<Offset><AbsDimension x="-5" y="-5"/></Offset>
+						</Anchor>
+					</Anchors>
+				</FontString> 
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				self:RegisterForClicks("AnyUp")
+				KUnits_Initialize(self, "focus", KUnits_focusname,
+									 				KUnits_focushp, KUnits_focushptext, 
+									 				KUnits_focushptext2, KUnits_focushpbg,
+									 				KUnits_focusmp, KUnits_focusmptext,
+									 				KUnits_focusmpbg, KUnits_focuslevel, 
+									 				KUnits_focushpperc)
+				KUnits_focus_OnLoad(self)
+			</OnLoad>
+		</Scripts>
+	</Button>
+	<Button name="KUnits_party1" inherits="KUnits_Party" id="1">
+		<Anchors>
+			<Anchor point="LEFT" relativeTo="UIParent" relativePoint="LEFT">
+				<Offset x="146" y="73"/>
+			</Anchor>
+		</Anchors>
+		<Frames>
+			<Button name="KUnits_partypet1" inherits="KUnits_Unit_mini">
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parent" relativePoint="BOTTOMLEFT">
+						<Offset><AbsDimension x="2" y="2"/></Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnMouseDown>
+				if button == "LeftButton" and IsShiftKeyDown() then
+					self:StartMoving()
+				end
+			</OnMouseDown>
+			<OnMouseUp>
+				if button == "LeftButton" then
+					self:StopMovingOrSizing()
+				end
+			</OnMouseUp>
+		</Scripts>
+	</Button>
+	<Button name="KUnits_party2" inherits="KUnits_Party" id="2">
+		<Anchors>
+			<Anchor point="TOP" relativeTo="KUnits_party1" relativePoint="BOTTOM">
+				<Offset x="0" y="-12"/>
+			</Anchor>
+		</Anchors>
+		<Frames>
+			<Button name="KUnits_partypet2" inherits="KUnits_Unit_mini">
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parent" relativePoint="BOTTOMLEFT">
+						<Offset><AbsDimension x="2" y="2"/></Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+		</Frames>
+	</Button>
+	<Button name="KUnits_party3" inherits="KUnits_Party" id="3">
+		<Anchors>
+			<Anchor point="TOP" relativeTo="KUnits_party2" relativePoint="BOTTOM">
+				<Offset x="0" y="-12"/>
+			</Anchor>
+		</Anchors>
+		<Frames>
+			<Button name="KUnits_partypet3" inherits="KUnits_Unit_mini">
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parent" relativePoint="BOTTOMLEFT">
+						<Offset><AbsDimension x="2" y="2"/></Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+		</Frames>
+	</Button>
+	<Button name="KUnits_party4" inherits="KUnits_Party" id="4">
+		<Anchors>
+			<Anchor point="TOP" relativeTo="KUnits_party3" relativePoint="BOTTOM">
+				<Offset x="0" y="-12"/>
+			</Anchor>
+		</Anchors>
+		<Frames>
+			<Button name="KUnits_partypet4" inherits="KUnits_Unit_mini">
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parent" relativePoint="BOTTOMLEFT">
+						<Offset><AbsDimension x="2" y="2"/></Offset>
+					</Anchor>
+				</Anchors>
+			</Button>
+		</Frames>
+	</Button>
+
+	<Frame name="KUnits_partyBG" clampedToScreen="true" frameStrata="BACKGROUND" parent="KUnits_PartyParent" hidden="true">
+		<Anchors>
+			<Anchor point="TOP" relativeTo="KUnits_party1" relativePoint="TOP"/>
+		</Anchors>
+		<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile = "Interface\Tooltips\UI-Tooltip-Border" tile="true">
+		<Color r="0" g="0" b="0" a="0.75"/>
+			<EdgeSize>
+				<AbsValue val="16"/>
+			</EdgeSize>
+			<TileSize>
+				<AbsValue val="16"/>
+			</TileSize>
+			<BackgroundInsets>
+				<AbsInset left="5" right="5" top="5" bottom="5"/>
+			</BackgroundInsets>
+		</Backdrop>
+		<Scripts>
+			<OnLoad>
+				KUnits_partyBG_OnLoad(self)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	<Frame name="KUnits_miniUpdater">
+		<Scripts>
+			<OnLoad>
+				KUnits_miniUpdater_OnLoad(self)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	
+	<Frame name="KUnits_healthevents">
+		<Scripts>
+			<OnLoad>
+				KUnits_healthevents_OnLoad(self)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	
+	<Frame name="KUnits_manaevents">
+		<Scripts>
+			<OnLoad>
+				KUnits_manaevents_OnLoad(self)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	
+	<Frame name="KUnits_basicevents">
+		<Scripts>
+			<OnLoad>
+				KUnits_basicevents_OnLoad(self)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	
+	<Frame name="KUnits_specificevents">
+		<Scripts>
+			<OnLoad>
+				KUnits_specificevents_OnLoad(self)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+	
+	<Frame name="KUnits_UnitRange">
+		<Scripts>
+			<OnLoad>
+				KUnits_UnitRange_OnLoad(self)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+</Ui>

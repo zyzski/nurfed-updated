@@ -1,0 +1,5 @@
+## Interface: 70300
+## Title: KUnits
+## SavedVariablesPerCharacter: KUnitsDB
+
+KUnits.xml

@@ -52,7 +52,7 @@ local UnitAffectingCombat = UnitAffectingCombat
 local GetNumRaidMembers = GetNumRaidMembers
 local GetPartyLeaderIndex = GetPartyLeaderIndex
 local GetComboPoints = GetComboPoints
-local GetNumPartyMembers = GetNumPartyMembers
+local GetNumPartyMembers = GetNumSubgroupMembers
 local GetPetHappiness = GetPetHappiness
 local GetRaidRosterInfo = GetRaidRosterInfo
 local PlaySound = PlaySound
@@ -122,7 +122,7 @@ local GameTooltip = GameTooltip
 -------------------------------------------------
 
 local print = function(text)
-	ChatFrame1:AddMessage(text.."")
+	ChatFrame1:AddMessage(text)
 end	
 
 local predict = {}
@@ -164,6 +164,24 @@ for _, val in ipairs(UnitReactionColor) do
 	val.hex = rgbhex(val.r, val.g, val.b)
 end
 
+-------------------------------------------------
+-- Energy Types
+-- "MANA"
+-- "RAGE"
+-- "FOCUS"
+-- "ENERGY"
+-- "HAPPINESS"
+-- "RUNES"
+-- "RUNIC_POWER"
+-- "SOUL_SHARDS"
+-- "ECLIPSE"
+-- "HOLY_POWER"
+-- "AMMOSLOT" (vehicles, 3.1)
+-- "FUEL" (vehicles, 3.1)
+-- "STAGGER"
+-- "CHI"
+-------------------------------------------------
+
 local ManaBarColor = {
 	[0] = { [1] = 0.00, [2] = 1.00, [3] = 1.00 },
 	[1] = { [1] = 1.00, [2] = 0.00, [3] = 0.00 },
@@ -172,6 +190,13 @@ local ManaBarColor = {
 	[4] = { [1] = 0.00, [2] = 1.00, [3] = 1.00 },
 	[5] = { [1] = 0.50, [2] = 0.50, [3] = 0.50 },
 	[6] = { [1] = 0.00, [2] = 0.82, [3] = 1.00 },
+	[7] = { [1] = 1.00, [2] = 1.00, [3] = 0.00 },
+	[8] = { [1] = 1.00, [2] = 1.00, [3] = 0.00 },
+	[9] = { [1] = 1.00, [2] = 1.00, [3] = 0.00 },
+	[10] = { [1] = 1.00, [2] = 1.00, [3] = 0.00 },
+	[11] = { [1] = 1.00, [2] = 1.00, [3] = 0.00 },
+	[12] = { [1] = 1.00, [2] = 1.00, [3] = 0.00 },
+	[13] = { [1] = 1.00, [2] = 1.00, [3] = 0.00 },
 }
 
 local class = {
@@ -315,7 +340,7 @@ local function getname(self)
 				color = RAID_CLASS_COLORS[eclass].hex
 			end
 		else
-			if UnitIsTapped(self.unit) and not UnitIsTappedByPlayer(self.unit) then
+			if UnitIsTapDenied(self.unit) then
 				color = "|cff7f7f7f"
 			else
 				reaction = UnitReaction(self.unit, "player")
@@ -446,6 +471,7 @@ local function KUnits_UpdateManaType()
 		end
 		info = ManaBarColor[UnitPowerType(self.unit)]
 		self.manabar.powerType = UnitPowerType(self.unit)
+		print(info)
 		r,g,b = unpack(info)
 		statusref_SetStatusBarColor(self.manabar,r,g,b)
 		textureref_SetVertexColor(self.manabar.bg,r,g,b,0.25)
@@ -610,7 +636,7 @@ end
 -- Buffs/Debuffs
 -------------------------------------------------
 
-local print = function(a1) if a1 then ChatFrame1:AddMessage(""..a1) end end
+local print = function(a1) if a1 then ChatFrame1:AddMessage(a1) end end
 
 local function KUnits_AuraUpdate(self)
 	local unit, buttonname, framenamedebuff, framenamebuff
@@ -749,7 +775,7 @@ end
 local function KUnits_player_UpdatePartyLeader()
 	local lootMethod, lootMaster
 	return function(self)
-		if IsPartyLeader() then
+		if UnitIsGroupLeader("player") then
 			textureref_Show(self.leader)
 		else
 			textureref_Hide(self.leader)
@@ -905,7 +931,7 @@ local function KUnits_target_Update(self)
 end
 
 local function KUnits_target_OnHide()
-	PlaySound("INTERFACESOUND_LOSTTARGETUNIT")
+	PlaySound(684)
 	CloseDropDownMenus()
 end
 	
@@ -1007,7 +1033,7 @@ local function KUnits_party_UpdateHighlight(self)
 end
 
 local function KUnits_party_UpdateLeader(self, id)
-	if GetPartyLeaderIndex() == id then
+	if UnitIsGroupLeader("player") then
 		textureref_Show(self.leader)
 	else
 		textureref_Hide(self.leader)

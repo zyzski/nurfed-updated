@@ -1,9 +1,14 @@
 # nurfed UI rebo0t
 
-###### Legendary
-
 `work in progress`
 
-![nurfed classic](https://i.imgur.com/IugyeQu.jpg 'Nurfed Classic')
+##### Status
+
+- Partially working for live: Legion 7.3.x
+
+##### To do
+
+- Test party/raid
+- Demon Hunter class icon in party frame
 
 ![furor](https://i.imgur.com/IHjSvqX.jpg 'Furor')

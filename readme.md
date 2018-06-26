@@ -2,6 +2,10 @@
 
 `work in progress`
 
+### Usage
+
+- Download or clone into a folder in your Addons directory
+
 ##### Status
 
 - Partially working for live: Legion 7.3.x

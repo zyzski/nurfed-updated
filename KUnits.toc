@@ -1,5 +1,5 @@
 ## Interface: 70300
-## Title: KUnits
+## Title: NurfedZyz
 ## SavedVariablesPerCharacter: KUnitsDB
 
 KUnits.xml

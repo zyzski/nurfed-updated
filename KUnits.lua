@@ -29,7 +29,7 @@ local UnitHealth = UnitHealth
 local UnitHealthMax = UnitHealthMax
 local UnitMana = UnitMana
 local UnitName = UnitName
-local UnitManaMax = UnitManaMax
+local UnitManaMax = UnitPowerMax
 local UnitDebuff = UnitDebuff
 local UnitBuff = UnitBuff
 local UnitIsFriend = UnitIsFriend
@@ -503,6 +503,7 @@ local function KUnitsManaBar_Update()
 				statusref_SetValue(manabar,0)
 			else
 				currValue = UnitPower(unit,manabar.powerType)
+				print('current value '..currValue)
 				statusref_SetValue(manabar,currValue)
 			end
 			fontstringref_SetFormattedText(manabar.text,"%d(%d)",currValue,maxValue)

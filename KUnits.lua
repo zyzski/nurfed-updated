@@ -49,7 +49,7 @@ local UnitIsTappedByPlayer = UnitIsTappedByPlayer
 local UnitPowerType = UnitPowerType
 local UnitPower = UnitPower
 local UnitAffectingCombat = UnitAffectingCombat
-local GetNumRaidMembers = GetNumRaidMembers
+local GetNumRaidMembers = GetNumGroupMembers
 local GetPartyLeaderIndex = GetPartyLeaderIndex
 local GetComboPoints = GetComboPoints
 local GetNumPartyMembers = GetNumSubgroupMembers
@@ -65,7 +65,8 @@ local GetQuestDifficultyColor = GetQuestDifficultyColor
 local SpellIsTargeting = SpellIsTargeting
 local SpellCanTargetUnit = SpellCanTargetUnit
 local SetCursor = SetCursor
-local CooldownFrame_SetTimer = CooldownFrame_SetTimer
+local CooldownFrame_SetTimer = CooldownFrame_Set
+local SetCooldown = SetCooldown
 local DebuffTypeColor = DebuffTypeColor
 local IsPartyLeader = IsPartyLeader
 local IsSpellInRange = IsSpellInRange
@@ -166,20 +167,26 @@ end
 
 -------------------------------------------------
 -- Energy Types
--- "MANA"
--- "RAGE"
--- "FOCUS"
--- "ENERGY"
--- "HAPPINESS"
--- "RUNES"
--- "RUNIC_POWER"
--- "SOUL_SHARDS"
--- "ECLIPSE"
--- "HOLY_POWER"
--- "AMMOSLOT" (vehicles, 3.1)
--- "FUEL" (vehicles, 3.1)
--- "STAGGER"
--- "CHI"
+-- 0 "MANA"
+-- 1 "RAGE" 
+-- 2 "FOCUS"
+-- 3 "ENERGY"
+-- 4 "CHI"
+-- 5 "RUNES"
+-- 6 "RUNIC_POWER"
+-- 7 "SOUL_SHARDS"
+-- 8 "LUNAR POWER"
+-- 9 "HOLY_POWER"
+
+-- 10 "AMMO" (vehicles, 3.1)
+
+-- 11 "MAELSTROM" (vehicles, 3.1)
+
+-- 12" STAGGER"
+
+-- 13 "Insanity"
+-- 17 FURY
+-- 18 PAIN
 -------------------------------------------------
 
 local ManaBarColor = {
@@ -187,16 +194,18 @@ local ManaBarColor = {
 	[1] = { [1] = 1.00, [2] = 0.00, [3] = 0.00 },
 	[2] = { [1] = 1.00, [2] = 0.50, [3] = 0.25 },
 	[3] = { [1] = 1.00, [2] = 1.00, [3] = 0.00 },
-	[4] = { [1] = 0.00, [2] = 1.00, [3] = 1.00 },
+	[4] = { [1] = 0.71, [2] = 1.00, [3] = 0.92 },
 	[5] = { [1] = 0.50, [2] = 0.50, [3] = 0.50 },
 	[6] = { [1] = 0.00, [2] = 0.82, [3] = 1.00 },
 	[7] = { [1] = 1.00, [2] = 1.00, [3] = 0.00 },
-	[8] = { [1] = 1.00, [2] = 1.00, [3] = 0.00 },
-	[9] = { [1] = 1.00, [2] = 1.00, [3] = 0.00 },
-	[10] = { [1] = 1.00, [2] = 1.00, [3] = 0.00 },
-	[11] = { [1] = 1.00, [2] = 1.00, [3] = 0.00 },
-	[12] = { [1] = 1.00, [2] = 1.00, [3] = 0.00 },
-	[13] = { [1] = 1.00, [2] = 1.00, [3] = 0.00 },
+	[8] = { [1] = 0.30, [2] = 0.52, [3] = 0.90 },
+	[9] = { [1] = 0.95, [2] = 0.90, [3] = 0.60 },
+	[10] = { [1] = 0.80, [2] = 0.60, [3] = 0.00 },
+	[11] = { [1] = 0.00, [2] = 0.50, [3] = 1.00 },
+	[12] = { [1] = 1.00, [2] = 1.00, [3] = 1.00 },
+	[13] = { [1] = 0.40, [2] = 0.00, [3] = 0.80 },
+	[17] = { [1] = 0.788, [2] = 0.259, [3] = 0.992 },
+	[18] = { [1] = 1.00, [2] = 0.61, [3] = 0.00	 },
 }
 
 local class = {
@@ -254,7 +263,6 @@ end
 local function getclassicon(unit, isclass)
 	local coords, texture, none, eclass
 	return function(unit, isclass)
-		print(unit)
 		texture = "Interface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes"
 		if isclass then
 			coords = class[unit]
@@ -469,9 +477,9 @@ local function KUnits_UpdateManaType()
 		if not self.manabar then
 			return
 		end
+		print(UnitPowerType(self.unit))
 		info = ManaBarColor[UnitPowerType(self.unit)]
 		self.manabar.powerType = UnitPowerType(self.unit)
-		print(info)
 		r,g,b = unpack(info)
 		statusref_SetStatusBarColor(self.manabar,r,g,b)
 		textureref_SetVertexColor(self.manabar.bg,r,g,b,0.25)
@@ -1158,7 +1166,7 @@ end
 function KUnits_pet_OnLoad(self)
 	self:ClearAllPoints()
 	self:SetScale(KUnitsDB.petscale or 1.0)
-	self:SetPoint("CENTER",UIParent,"CENTER")
+	self:SetPoint("LEFT",UIParent,"RIGHT")
 	self.buffs = KUnits_CountBuffs(self:GetName())
 	self.debuffs = KUnits_CountDebuffs(self:GetName())
 	self.happiness = KUnits_pethappiness
@@ -1528,11 +1536,11 @@ function KUnits_specificevents_OnLoad(self)
 			CloseDropDownMenus() 
 			if UnitExists("target") then 
 				if UnitIsEnemy("target", "player") then
-					PlaySound("igCreatureAggroSelect")
+					PlaySound(SOUNDKIT.IG_CREATURE_AGGRO_SELECT)
 				elseif UnitIsFriend("player", "target") then
-					PlaySound("igCharacterNPCSelect")
+					PlaySound(SOUNDKIT.IG_CHARACTER_NPC_SELECT)
 				else
-					PlaySound("igCreatureNeutralSelect")
+					PlaySound(SOUNDKIT.IG_CREATURE_NEUTRAL_SELECT)
 				end
 			end
 			KUnits_party_UpdateHighlight(KUnits_party1)

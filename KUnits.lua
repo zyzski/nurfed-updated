@@ -53,7 +53,6 @@ local GetNumRaidMembers = GetNumGroupMembers
 local GetPartyLeaderIndex = GetPartyLeaderIndex
 local GetComboPoints = GetComboPoints
 local GetNumPartyMembers = GetNumSubgroupMembers
-local GetPetHappiness = GetPetHappiness
 local GetRaidRosterInfo = GetRaidRosterInfo
 local PlaySound = PlaySound
 local CloseDropDownMenus = CloseDropDownMenus
@@ -1131,35 +1130,9 @@ end
 -- Pet
 -------------------------------------------------
 
-local function KUnits_pet_SetHappiness(self)
-	local happiness, damagePercentage = GetPetHappiness()
-	local hasPetUI, isHunterPet = HasPetUI()
-	if happiness or isHunterPet then
-		local display
-		local text = self.name
-		local icon = self.happiness
-		if text then display = "["..UnitLevel("pet").."] "..UnitName("pet") end
-		if icon then icon:Show() end
-		if happiness == 1 then
-			if text then text:SetTextColor(1, 0.5, 0) end
-			if icon then icon:SetTexCoord(0.375, 0.5625, 0, 0.359375) end
-		elseif happiness == 2 then
-			if text then text:SetTextColor(1, 1, 0) end
-			if icon then icon:SetTexCoord(0.1875, 0.375, 0, 0.359375) end
-		elseif happiness == 3 then
-			if text then text:SetTextColor(0, 1, 0) end
-			if icon then icon:SetTexCoord(0, 0.1875, 0, 0.359375) end
-		end
-		if text then
-			text:SetText(display)
-		end
-	end
-end
-
 local function KUnits_pet_Update(self)
 	if UnitExists("pet") then
 		KUnits_Update(self)
-		KUnits_pet_SetHappiness(self)
 		KUnits_AuraUpdate(self)
 	end
 end
@@ -1170,7 +1143,6 @@ function KUnits_pet_OnLoad(self)
 	self:SetPoint("LEFT",UIParent,"RIGHT")
 	self.buffs = KUnits_CountBuffs(self:GetName())
 	self.debuffs = KUnits_CountDebuffs(self:GetName())
-	self.happiness = KUnits_pethappiness
 	self.debuffwidth = 160
 	self.buffwidth = 160
 	self:SetScript("OnEnter", KUnits_OnEnter)
@@ -1358,12 +1330,10 @@ function KUnits_manaevents_OnLoad(self)
 	self:RegisterEvent("UNIT_RAGE")
 	self:RegisterEvent("UNIT_FOCUS")
 	self:RegisterEvent("UNIT_ENERGY")
-	self:RegisterEvent("UNIT_HAPPINESS")
 	self:RegisterEvent("UNIT_MAXMANA")
 	self:RegisterEvent("UNIT_MAXRAGE")
 	self:RegisterEvent("UNIT_MAXFOCUS")
 	self:RegisterEvent("UNIT_MAXENERGY")
-	self:RegisterEvent("UNIT_MAXHAPPINESS")
 	self:RegisterEvent("UNIT_DISPLAYPOWER")
 	
 	local KUnits_playermp, KUnits_party1mp, KUnits_party2mp, KUnits_party3mp, KUnits_party4mp, KUnits_targetmp, KUnits_focusmp, KUnits_petmp = 
@@ -1584,9 +1554,6 @@ function KUnits_specificevents_OnLoad(self)
 				KUnits_UpdateMini(_G["KUnits_"..v])
 			end
 		end,
-		["UNIT_HAPPINESS"] = function()
-			KUnits_pet_SetHappiness(KUnits_pet)
-		end,
 		["PARTY_LOOT_METHOD_CHANGED"] = function()
 			KUnits_CheckLootMethod(KUnits_party1)
 			KUnits_CheckLootMethod(KUnits_party2)
@@ -1600,7 +1567,6 @@ function KUnits_specificevents_OnLoad(self)
 		end,
 	}
 	
-	self:RegisterEvent("UNIT_HAPPINESS")
 	self:RegisterEvent("UNIT_PET")
 	self:RegisterEvent("UNIT_LEVEL")
 	self:RegisterEvent("UNIT_AURA") 
